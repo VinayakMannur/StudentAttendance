@@ -4,7 +4,7 @@ const Attendance = require('../models/attendance');
 exports.getAllStudents = (req, res, next) => {
     Students.getStudents()
         .then((data) => {
-            console.log(data[0]);
+            // console.log(data[0]);
             res.json({data:data[0]});
         })
         .catch(err => console.log(err));
@@ -26,7 +26,26 @@ exports.postAttendance = (req, res, next) => {
 
     post.save()
         .then((result) => {
-            console.log('attendance added');
+            // res.json(result)
+            res.json({msg:"Attendance Added!"});
         })
         .catch(err => console.log(err))
+}
+
+exports.getDateList = (req, res, next) => {
+    Attendance.getDate()
+        .then(data => {
+            console.log(data[0]);
+            res.json({data:data[0]})
+        })
+        .catch(err => console.log(err));
+}
+
+exports.getMarkedAttendance = (req, res, next) =>{
+    const date = req.params.presentDate;
+    Attendance.getStudentsMarked(date)
+        .then(result => {
+            console.log(result);
+        })
+        .catch(err => console.log(err));
 }

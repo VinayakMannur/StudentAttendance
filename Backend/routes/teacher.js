@@ -8,4 +8,8 @@ router.get('/allStudents',teacher.getAllStudents);
 
 router.post('/postAttendance', teacher.postAttendance);
 
+router.get('/getDate',teacher.getDateList);
+
+router.get('/marked/:presentDate', teacher.getMarkedAttendance);
+
 module.exports = router;

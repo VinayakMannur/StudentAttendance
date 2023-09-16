@@ -6,10 +6,36 @@ markAttendance.addEventListener('click', submitAttendance);
 
 async function searchAttendance(e){
     e.preventDefault();
-    const date = document.getElementById('getDate').value;
-    // console.log(date);
+
+    let dates = []
+    await axios.get('http://localhost:2000/getDate')
+        .then((responce) => {
+            console.log(responce.data.data);
+            dates = responce.data.data;
+        })
+        .catch(err => console.log(err))
+
+    let presentDate = document.getElementById('getDate').value;
+    let dateValue = false;
+
+    dates.forEach(date => {
+        var arr = [...date.date];
+        arr.splice(10,20);
+        arr = arr.join('');
+        console.log(arr);
+        if(arr === presentDate){
+            dateValue = true
+        }
+    })
+
+    if(dateValue){
+        console.log('indside present date');
+        showMarkedStudents(presentDate)
+    }else{
+        console.log('inside show students');
+        showAllStudents();
+    } 
     
-    showAllStudents();
 }
 
 async function showAllStudents(){
@@ -21,7 +47,7 @@ async function showAllStudents(){
     
     await axios.get('http://localhost:2000/allStudents')
         .then((responce) => {
-            console.log(responce);
+            // console.log(responce.data.data);
             students = responce.data.data;
         })
         .catch(err => console.log(err))
@@ -58,65 +84,79 @@ async function showAllStudents(){
         preradio.name = 'status'
         preradio.id = `p${stud.id}`;
         preradio.value = 'present';
-
+        
         const prelabel= document.createElement('label');
         prelabel.className = 'm-2';
         prelabel.setAttribute("for",`p${stud.id}`);
         prelabel.textContent = 'Present'
-
+        
         div.appendChild(abradio);
         div.appendChild(ablabel);
         div.appendChild(preradio);
         div.appendChild(prelabel);
-
+        
         li.appendChild(div);
-
-        parent.appendChild(li)     
+        
+        parent.appendChild(li);
     })
 }
 
 async function submitAttendance(){
     // console.log('attendance submitted');
-    let newList = [];
+    let num = document.querySelectorAll('input[name="status"]:checked');
+    if(num.length == 9){
+        let newList = [];
 
-    const date = document.getElementById('getDate').value;
-    newList.push(date);
+        const date = document.getElementById('getDate').value;
+        newList.push(date);
 
-    const studentList = document.querySelectorAll('.student')
+        const studentList = document.querySelectorAll('.student')
 
-    // console.log(studentList);
-    studentList.forEach(student => {
-        let id = student.firstChild.textContent;
-        // console.log(student);
-        const ele = student.lastChild.elements;
-        // console.log(ele);
-        let status = ''
+        // console.log(studentList);
+        studentList.forEach(student => {
+            let id = student.firstChild.textContent;
+            // console.log(student);
+            const ele = student.lastChild.elements;
+            // console.log(ele);
+            let status = ''
 
-        for(let i=0; i<ele.length;i++){
-            if(ele[i].checked){
-                // console.log(ele[i].value);
-                status = ele[i].value
-            }   
-        }
-        newList.push(status)
-    })
+            for(let i=0; i<ele.length;i++){
+                if(ele[i].checked){
+                    // console.log(ele[i].value);
+                    status = ele[i].value
+                }   
+            }
+            newList.push(status)
+        })
 
-    await axios.post('http://localhost:2000/postAttendance',{
-        date: newList[0],
-        s1: newList[1],
-        s2: newList[2],
-        s3: newList[3],
-        s4: newList[4],
-        s5: newList[5],
-        s6: newList[6],
-        s7: newList[7],
-        s8: newList[8],
-        s9: newList[9]
-    })
+        await axios.post('http://localhost:2000/postAttendance',{
+            date: newList[0],
+            s1: newList[1],
+            s2: newList[2],
+            s3: newList[3],
+            s4: newList[4],
+            s5: newList[5],
+            s6: newList[6],
+            s7: newList[7],
+            s8: newList[8],
+            s9: newList[9]
+        })
+            .then(responce => {
+                alert(responce.data.msg)
+                location.reload();
+            })
+            .catch(err => console.log(err));
+    }
+    else{
+        alert("Please select all fields!!");
+    }
+}
+
+async function showMarkedStudents(presentDate){
+    
+    await axios.get(`http://localhost:2000/marked/${presentDate}`)
         .then(responce => {
             console.log(responce);
-            location.reload();
         })
         .catch(err => console.log(err));
-    
 }
