@@ -35,7 +35,7 @@ exports.postAttendance = (req, res, next) => {
 exports.getDateList = (req, res, next) => {
     Attendance.getDate()
         .then(data => {
-            console.log(data[0]);
+            // console.log(data[0]);
             res.json({data:data[0]})
         })
         .catch(err => console.log(err));
@@ -45,7 +45,17 @@ exports.getMarkedAttendance = (req, res, next) =>{
     const date = req.params.presentDate;
     Attendance.getStudentsMarked(date)
         .then(result => {
-            console.log(result);
+            // console.log(result[0]);
+            res.json({result:result[0]});
+        })
+        .catch(err => console.log(err));
+}
+
+exports.getReport = (req, res, next) => {
+    Attendance.getEverything()
+        .then(result => {
+            // console.log(result[0]);
+            res.json({result:result[0]})
         })
         .catch(err => console.log(err));
 }

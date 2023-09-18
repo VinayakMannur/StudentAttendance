@@ -20,10 +20,14 @@ module.exports = class Attendance{
     }
 
     static getDate(){
-        return db.execute('SELECT date FROM attendance')
+        return db.execute('SELECT date from attendance');
     }
 
     static getStudentsMarked(date){
         return db.execute('SELECT * FROM attendance WHERE date=?',[date])
+    }
+
+    static getEverything(){
+        return db.execute('SELECT * FROM attendance')
     }
 }

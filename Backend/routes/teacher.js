@@ -12,4 +12,6 @@ router.get('/getDate',teacher.getDateList);
 
 router.get('/marked/:presentDate', teacher.getMarkedAttendance);
 
+router.get('/getReport', teacher.getReport);
+
 module.exports = router;
